@@ -1,6 +1,15 @@
+import os
 from PIL import Image
 import pytesseract
 
-# For Windows
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Set the TESSDATA_PREFIX environment variable
+os.environ['TESSDATA_PREFIX'] = '/opt/anaconda3/envs/ocv/share/tessdata'
+
+# Specify the Tesseract executable path
+pytesseract.pytesseract.tesseract_cmd = '/opt/anaconda3/envs/ocv/bin/tesseract'
+
+print(pytesseract.image_to_string('../Data/test.png'))
+print(pytesseract.image_to_string('../Data/test-european.jpg'))
+
+
 

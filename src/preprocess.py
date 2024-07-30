@@ -27,21 +27,16 @@ def adjust_brightness_contrast(image, alpha=1.5, beta=-40):
         return cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return image
 
+def binaryization(img):
+    result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    return result_img
+
 def preprocess_image(img):
-    image = adjust_brightness_contrast(img)
-    cv2.imshow("original", img)
-    cv2.waitKey(0)
-    cv2.imshow("adjusted", image)
-    cv2.waitKey(0)
-
-image_path = f'../data/images/1002-receipt.jpg'
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-preprocess_image(image)
-
-# def preprocess_image(img):
-
+    # Check if the image is already in grayscale
+    if len(img.shape) == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Generate Image Histogram
-
+    image = adjust_brightness_contrast(img)
     # Generate MSE - Original image
 
     # Noise Removal
@@ -54,5 +49,21 @@ preprocess_image(image)
     # Get MSE - Each mask of equalized image
 
     # Binarization of best equalized image
+    binaried_image = binaryization(img)
+
+    # Display image
+    cv2.imshow("Binarized Image", binaried_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    cv2.imshow("original", img)
+    cv2.waitKey(0)
+    cv2.imshow("adjusted", image)
+    cv2.waitKey(0)
 
     # Return Image
+    # return binaried_image
+
+image_path = f'../data/images/1002-receipt.jpg'
+image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+preprocess_image(image)

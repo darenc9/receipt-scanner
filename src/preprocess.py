@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 def analyze_histogram(image):
     """
@@ -30,39 +31,65 @@ def adjust_brightness_contrast(image, alpha=1.5, beta=-40):
 def binaryization(img):
     result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     return result_img
+def calculate_mse(imageA, imageB):
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+    return err
+
+# Compares the mse value and the threshold to see if image needs to remove noise
+def needs_noise_removal(image, threshold=200):
+    blurred = cv2.GaussianBlur(image, (5, 5), 0)
+    mse_value = calculate_mse(image, blurred)
+    print(f"MSE between original and blurred image: {mse_value}")
+    return mse_value > threshold
+
+def plot_histogram(image, title):
+    plt.figure()
+    plt.title(title)
+    plt.xlabel("Bins")
+    plt.ylabel("# of Pixels")
+    plt.hist(image.ravel(), 256, [0, 256])
+    plt.show()
+# Equalize Images with CLAHE Method
+def clahe_equalization(img):
+
+    image = adjust_brightness_contrast(img)
+    
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    clahe_image = clahe.apply(image)
+    
+    plot_histogram(image, "Original Image Histogram")
+    plot_histogram(clahe_image, "CLAHE Equalized Image Histogram")
 
 def preprocess_image(img):
-    # Check if the image is already in grayscale
-    if len(img.shape) == 3:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
     # Generate Image Histogram
+    plot_histogram(img, "Original Image Histogram")
+    # Enchanced brightness or contrast
     image = adjust_brightness_contrast(img)
+
     # Generate MSE - Original image
-
+    mse_original = calculate_mse(image, image)
+    print(f"MSE of Original Image: {mse_original}")
     # Noise Removal
-
+    # Check if noise removal is needed
+    if needs_noise_removal(image):
+        # Apply noise removal
+        noise_removed = cv2.medianBlur(image, 5)
+    else:
+        noise_removed = image
     # Get MSE - Noise Removed image
+    mse_noise_removed = calculate_mse(image, noise_removed)
+    print(f"MSE after Noise Removal: {mse_noise_removed}")
     # Generate new Image Histogram
-
-    # Image Equalization - w/ diff masks
-
+    plot_histogram(noise_removed, "Histogram after Noise Removal")
+    # Image Equalization - w/ CLAHE
+    equalized_image=clahe_equalization(noise_removed)
     # Get MSE - Each mask of equalized image
 
     # Binarization of best equalized image
-    binaried_image = binaryization(img)
-
-    # Display image
-    cv2.imshow("Binarized Image", binaried_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    
-    cv2.imshow("original", img)
-    cv2.waitKey(0)
-    cv2.imshow("adjusted", image)
-    cv2.waitKey(0)
-
-    # Return Image
-    # return binaried_image
+    binaried_image = binaryization(equalized_image)
+    return binaried_image
 
 image_path = f'../data/images/1002-receipt.jpg'
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)

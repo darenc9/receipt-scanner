@@ -31,6 +31,7 @@ def adjust_brightness_contrast(image, alpha=1.5, beta=-40):
 def binaryization(img):
     result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     return result_img
+
 def calculate_mse(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
     err /= float(imageA.shape[0] * imageA.shape[1])
@@ -50,6 +51,7 @@ def plot_histogram(image, title):
     plt.ylabel("# of Pixels")
     plt.hist(image.ravel(), 256, [0, 256])
     plt.show()
+
 # Equalize Images with CLAHE Method
 def clahe_equalization(img):
 
@@ -65,6 +67,7 @@ def preprocess_image(img):
 
     # Generate Image Histogram
     plot_histogram(img, "Original Image Histogram")
+
     # Enchanced brightness or contrast
     image = adjust_brightness_contrast(img)
 
@@ -84,7 +87,7 @@ def preprocess_image(img):
     # Generate new Image Histogram
     plot_histogram(noise_removed, "Histogram after Noise Removal")
     # Image Equalization - w/ CLAHE
-    equalized_image=clahe_equalization(noise_removed)
+    equalized_image = clahe_equalization(noise_removed)
     # Get MSE - Each mask of equalized image
 
     # Binarization of best equalized image
@@ -92,5 +95,5 @@ def preprocess_image(img):
     return binaried_image
 
 image_path = f'../data/images/1002-receipt.jpg'
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-preprocess_image(image)
+image_gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+preprocess_image(image_gray)

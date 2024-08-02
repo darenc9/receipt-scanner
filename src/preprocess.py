@@ -29,7 +29,7 @@ def adjust_brightness_contrast(image, alpha=1.5, beta=-40):
 
 
 def binaryization(img):
-    result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+    result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 13)
     return result_img
 
 
@@ -108,22 +108,22 @@ def preprocess_image(img):
 # preprocess_image(image_gray)
 
 
-def canny_edge_detection(image):
-    """
-    Perform Canny edge detection on a denoised, binarized image.
-
-    Args:
-        image (numpy.ndarray): The denoised, binarized image.
-
-    Returns:
-        numpy.ndarray: The image with edges detected.
-    """
-    # Define the lower and upper thresholds for the Canny edge detector
-    lower_threshold = 100
-    upper_threshold = 150
-
-    # Apply the Canny edge detector
-    edges = cv2.Canny(image, lower_threshold, upper_threshold)
-    cv2.imshow("bi img", edges)
-    cv2.waitKey(0)
-    return edges
+# def canny_edge_detection(image):
+#     """
+#     Perform Canny edge detection on a denoised, binarized image.
+#
+#     Args:
+#         image (numpy.ndarray): The denoised, binarized image.
+#
+#     Returns:
+#         numpy.ndarray: The image with edges detected.
+#     """
+#     # Define the lower and upper thresholds for the Canny edge detector
+#     lower_threshold = 100
+#     upper_threshold = 150
+#
+#     # Apply the Canny edge detector
+#     edges = cv2.Canny(image, lower_threshold, upper_threshold)
+#     cv2.imshow("bi img", edges)
+#     cv2.waitKey(0)
+#     return edges

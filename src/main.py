@@ -7,7 +7,7 @@ from src.preprocess import preprocess_image
 from src.ocr import get_text
 
 folder_path = "../data/chosen-images/"
-image_path = "../data/chosen-images/1026-receipt.jpg"
+image_path = "../data/chosen-images/1023-receipt.jpg"
 # image_path2 = "../data/test-european.jpg"
 
 # Read input image

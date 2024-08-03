@@ -12,10 +12,10 @@ def save_text_to_file(text, file_name, file_format='txt', output_folder="../Outp
     """
     Saves the provided text to a file in the specified format at the specified location
     Parameters:
-        :param text (str): text data to be saved
-        :param file_name (str): Base name of the file without the extension
-        :param file_format (str): Format in which to save the file. Supported formats include 'txt', 'pdf', and 'html'
-        :param output_folder (str): The directory path where the file will be saved.
+        :param text: String - text data to be saved
+        :param file_name: String - Base name of the file without the extension
+        :param file_format: String - Format in which to save the file. Supported formats include 'txt', 'pdf', and 'html'
+        :param output_folder: String - The directory path where the file will be saved.
         :return: no return, just saves text to file
     """
     # The complete out path w/ preferred file extension
@@ -48,9 +48,9 @@ def process_image_file(image_path, output_format):
     Calling the save text to file function
 
     Parameters:
-        :param image_path (str): Full path to the image file
-        :param output_format (str): Format to save the extracted text. Options include 'txt', 'pdf', 'html'.
-        :return: Doesnt return anything, just processes and leads to saving functionality
+        :param image_path: String -  Full path to the image file
+        :param output_format: String - Format to save the extracted text. Options include 'txt', 'pdf', 'html'.
+        :return: Doesn't return anything, just processes and leads to saving functionality
     """
     # Reads the image into a grayscale image
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -69,23 +69,35 @@ def process_image_file(image_path, output_format):
 def save_preprocessed_img(img, img_name):
     """
     Saves the preprocessed image to the data/preprocessed_image/
+
     Parameters
-    :param img: Image in question
-    :param img_name: Name of image to be saved
-    :return: doesnt return anything, just saves the image
+        :param img: Image - Image in question
+        :param img_name: String - Name of image to be saved
+        :return: Doesn't return anything, just saves the image
     """
     folder_location = "../data/preprocessed_image/"
     cv2.imwrite(img, folder_location + img_name)
 
 
 def main(path, output_format='txt'):
+    """
+    Main function to process images for OCR from a specified path.
+
+    Parameter
+        :param path: Path to an image file or a directory containing image files
+        :param output_format: Desired format for the output text files ('txt', 'pdf', 'html')
+    """
+    # Double checks path
     if not os.path.exists(path):
         print(f"Error: The provided path does not exist: {path}")
         return
+    # Checks if param is a single image or a directory of images
     if os.path.isdir(path):
         for filename in os.listdir(path):
+            # Going through images of accepted extension
             if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
                 full_image_path = os.path.join(path, filename)
+                # Calls process_image_file to preprocess and further the process for an image
                 process_image_file(full_image_path, output_format)
     elif os.path.isfile(path):
         process_image_file(path, output_format)
@@ -96,6 +108,7 @@ def main(path, output_format='txt'):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Process images for OCR and save the extracted text.")
+    # Adding arguments for the main.py
     parser.add_argument("path", help="Path to the image file or directory to process")
     parser.add_argument("--format", default='txt', choices=['txt', 'pdf', 'html'],
                         help="Format to save the extracted text")

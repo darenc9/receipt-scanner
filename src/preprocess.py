@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 def analyze_histogram(image):
     """
     Analyzes the image histogram to decide if brightness or contrast adjustments are needed
-    Args: image (numpy.ndarray): Input grayscale image.
+    Parameter
+        :param image: Input grayscale image.
     If needed: returns True, else returns False.
     """
     # Calc histogram
@@ -29,6 +30,11 @@ def adjust_brightness_contrast(image, alpha=1.5, beta=-40):
 
 
 def binaryization(img):
+    """
+    Parameter
+        :param img: Image to be binaried
+        :return: binary image
+    """
     result_img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 13)
     return result_img
 

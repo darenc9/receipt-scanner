@@ -14,9 +14,18 @@ print(pytesseract.image_to_string('../data/chosen-images/1000-receipt.jpg'))
 
 
 def get_text(image):
-    # Config options for tesseract, didnt help
-    # https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html#simplest-invocation-to-ocr-an-image
-    # custom_config = r'--oem 3 --psm 3'
-    # Use pytesseract to extract text from the image
+    """
+    Use pytesseract to extract text from the image
+
+    Parameter
+        :param image: processed image
+        :return:
+    Config options for tesseract:
+        https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html#simplest-invocation-to-ocr-an-image
+    - custom_config = r'--oem 3 --psm 3'
+    pytesseract.image_to_string(image, custom_config)
+    - Didnt rly work, does its job in Default
+    """
+
     text = pytesseract.image_to_string(image)
     return text

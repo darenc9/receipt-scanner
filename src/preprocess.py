@@ -102,28 +102,3 @@ def preprocess_image(img):
     cv2.imshow("bi img", binaried_image)
     cv2.waitKey(0)
     return binaried_image
-
-# image_path = f'../data/images/1002-receipt.jpg'
-# image_gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-# preprocess_image(image_gray)
-
-
-# def canny_edge_detection(image):
-#     """
-#     Perform Canny edge detection on a denoised, binarized image.
-#
-#     Args:
-#         image (numpy.ndarray): The denoised, binarized image.
-#
-#     Returns:
-#         numpy.ndarray: The image with edges detected.
-#     """
-#     # Define the lower and upper thresholds for the Canny edge detector
-#     lower_threshold = 100
-#     upper_threshold = 150
-#
-#     # Apply the Canny edge detector
-#     edges = cv2.Canny(image, lower_threshold, upper_threshold)
-#     cv2.imshow("bi img", edges)
-#     cv2.waitKey(0)
-#     return edges

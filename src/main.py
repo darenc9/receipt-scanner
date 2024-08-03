@@ -3,60 +3,101 @@ import os
 import cv2
 import numpy as np
 from PIL import Image
+from fpdf import FPDF
 from src.preprocess import preprocess_image
 from src.ocr import get_text
 
-folder_path = "../data/chosen-images/"
-image_path = "../data/chosen-images/1023-receipt.jpg"
-# image_path2 = "../data/test-european.jpg"
 
-# Read input image
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-# image2 = cv2.imread(image_path2, cv2.IMREAD_GRAYSCALE)
+def save_text_to_file(text, file_name, file_format='txt', output_folder="../Output"):
+    """
+    Saves the provided text to a file in the specified format at the specified location
+    Parameters:
+        :param text (str): text data to be saved
+        :param file_name (str): Base name of the file without the extension
+        :param file_format (str): Format in which to save the file. Supported formats include 'txt', 'pdf', and 'html'
+        :param output_folder (str): The directory path where the file will be saved.
+        :return: no return, just saves text to file
+    """
+    # The complete out path w/ preferred file extension
+    out_path = os.path.join(output_folder, f"{file_name}.{file_format}")
+
+    # Replace new lines with HTML break lines if the format is HTML
+    text_html = text.replace("\n", "<br>")
+
+    # Depending on preferred format, does different conversions
+    if file_format.lower() == 'txt':
+        with open(out_path, 'w', encoding='utf-8') as file:
+            file.write(text)
+    elif file_format.lower() == 'pdf':
+        # Using FPDF library
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, text)
+        pdf.output(out_path, 'F')
+    elif file_format.lower() == 'html':
+        with open(out_path, 'w', encoding='utf-8') as file:
+            file.write(f'<html><body><p>{text_html}</p></body></html>')
+
+    print(f"Text saved as {out_path}")
 
 
-# obtain processed image
-processed_image = preprocess_image(image)
-# p2 = preprocess_image(image2)
+def process_image_file(image_path, output_format):
+    """
+    Processes an image file for OCR and saves the extracted text to a file
+    Calling the save text to file function
 
-# For Testing
+    Parameters:
+        :param image_path (str): Full path to the image file
+        :param output_format (str): Format to save the extracted text. Options include 'txt', 'pdf', 'html'.
+        :return: Doesnt return anything, just processes and leads to saving functionality
+    """
+    # Reads the image into a grayscale image
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    # Checker if none
+    if image is None:
+        print(f"Error: Image not found at {image_path}")
+        return
+    # processes the image
+    pp_image = preprocess_image(image)
+    base_name = os.path.splitext(os.path.basename(image_path))[0]
+    output_filename = f"{base_name}_pp"
+    save_preprocessed_img(pp_image, output_filename)
+    save_text_to_file(get_text(pp_image), output_filename, output_format)
 
-# Scan unprocessed image
 
-# Scan Read processed image
-extracted_data = get_text(processed_image)
-print("Processed Image Text:")
-print(extracted_data)
+def save_preprocessed_img(img, img_name):
+    """
+    Saves the preprocessed image to the data/preprocessed_image/
+    Parameters
+    :param img: Image in question
+    :param img_name: Name of image to be saved
+    :return: doesnt return anything, just saves the image
+    """
+    folder_location = "../data/preprocessed_image/"
+    cv2.imwrite(img, folder_location + img_name)
 
-# extracted_data2 = get_text(p2)
-# print("Processed Image Text 2:")
-# print(extracted_data2)
 
-# Loop through all files in the folder
-# for filename in os.listdir(folder_path):
-#     # Check if the file is an image
-#     image_path = os.path.join(folder_path, filename)
-#
-#     # Read the image
-#     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-#
-#     # Check if image was successfully loaded
-#     if image is not None:
-#         # Obtain processed image
-#         processed_image = preprocess_image(image)
-#
-#         # Extract text from processed image
-#         extracted_data = get_text(processed_image)
-#
-#         print(f"\n-------------------------------------")
-#         print(f"Processed Image Text for {filename}:")
-#         print(extracted_data)
-#         print(f"\n-------------------------------------")
-#     else:
-#         print(f"Failed to load image: {filename}")
+def main(path, output_format='txt'):
+    if not os.path.exists(path):
+        print(f"Error: The provided path does not exist: {path}")
+        return
+    if os.path.isdir(path):
+        for filename in os.listdir(path):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                full_image_path = os.path.join(path, filename)
+                process_image_file(full_image_path, output_format)
+    elif os.path.isfile(path):
+        process_image_file(path, output_format)
+    else:
+        print(f"Provided path is neither a directory nor a file: {path}")
 
-# Show converted data in text
 
-# Convert data into preferred extension
-
-# Saved extracted data w/ preferred name
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Process images for OCR and save the extracted text.")
+    parser.add_argument("path", help="Path to the image file or directory to process")
+    parser.add_argument("--format", default='txt', choices=['txt', 'pdf', 'html'],
+                        help="Format to save the extracted text")
+    args = parser.parse_args()
+    main(args.path, args.format)

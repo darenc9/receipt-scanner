@@ -76,7 +76,8 @@ def save_preprocessed_img(img, img_name):
         :return: Doesn't return anything, just saves the image
     """
     folder_location = "../data/preprocessed_image/"
-    cv2.imwrite(img, folder_location + img_name)
+    full_path = os.path.join(folder_location, f"{img_name}.jpg")
+    cv2.imwrite(full_path, img)
 
 
 def main(path, output_format='txt'):
@@ -114,3 +115,5 @@ if __name__ == "__main__":
                         help="Format to save the extracted text")
     args = parser.parse_args()
     main(args.path, args.format)
+    # Like main.py --format txt path
+

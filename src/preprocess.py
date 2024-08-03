@@ -104,7 +104,6 @@ def preprocess_image(img):
 
     # Binarization of best equalized image
     binaried_image = binaryization(equalized_image)
-    # canny_img = canny_edge_detection(binaried_image)
-    cv2.imshow("bi img", binaried_image)
-    cv2.waitKey(0)
+    # cv2.imshow("bi img", binaried_image)
+    # cv2.waitKey(0)
     return binaried_image

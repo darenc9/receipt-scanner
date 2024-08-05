@@ -90,7 +90,7 @@ def preprocess_image(img):
     # Check if noise removal is needed
     if needs_noise_removal(image):
         # Apply noise removal
-        noise_removed = cv2.medianBlur(image, 3)
+        noise_removed=cv2.bilateralFilter(image, 9, 75, 75)
     else:
         noise_removed = image
     # Get MSE - Noise Removed image
@@ -102,8 +102,15 @@ def preprocess_image(img):
     equalized_image = clahe_equalization(noise_removed)
     # Get MSE - Each mask of equalized image
 
+    #Rescale Image
+    scale_percent = 150  
+    width = int(equalized_image.shape[1] * scale_percent / 100)
+    height = int(equalized_image.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    rescaled = cv2.resize(equalized_image, dim, interpolation=cv2.INTER_LINEAR)
+
     # Binarization of best equalized image
-    binaried_image = binaryization(equalized_image)
-    # cv2.imshow("bi img", binaried_image)
-    # cv2.waitKey(0)
+    binaried_image = binaryization(rescaled)
+    #cv2.imshow("bi img", binaried_image)
+    #cv2.waitKey(0)
     return binaried_image

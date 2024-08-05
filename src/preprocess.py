@@ -95,8 +95,8 @@ def clahe_equalization(img):
     clahe_image = clahe.apply(image)
     
     # Apply CLAHE to the image to enhance local contrast
-    plot_histogram(image, "Original Image Histogram")
-    plot_histogram(clahe_image, "CLAHE Equalized Image Histogram")
+    # plot_histogram(image, "Original Image Histogram")
+    # plot_histogram(clahe_image, "CLAHE Equalized Image Histogram")
     # Return the CLAHE equalized image
     return clahe_image
 
@@ -104,7 +104,7 @@ def clahe_equalization(img):
 def preprocess_image(img):
 
     # Generate Image Histogram
-    plot_histogram(img, "Original Image Histogram")
+    # plot_histogram(img, "Original Image Histogram")
 
     # Enchanced brightness or contrast
     image = adjust_brightness_contrast(img)
@@ -123,7 +123,7 @@ def preprocess_image(img):
     mse_noise_removed = calculate_mse(image, noise_removed)
     print(f"MSE after Noise Removal: {mse_noise_removed}")
     # Generate new Image Histogram
-    plot_histogram(noise_removed, "Histogram after Noise Removal")
+    # plot_histogram(noise_removed, "Histogram after Noise Removal")
     # Image Equalization - w/ CLAHE
     equalized_image = clahe_equalization(noise_removed)
     # Get MSE - Each mask of equalized image

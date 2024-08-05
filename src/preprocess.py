@@ -47,13 +47,31 @@ def calculate_mse(imageA, imageB):
 
 # Compares the mse value and the threshold to see if image needs to remove noise
 def needs_noise_removal(image, threshold=200):
+    """
+    Parameters:
+    :param image: numpy.ndarray
+        The input image to be evaluated for noise.
+    :param threshold: float
+        The MSE threshold to decide if noise removal is needed. Default is 200.
+    Returns: bool
+    """
+    # Apply Gaussian blur to the image to create a blurred version
     blurred = cv2.GaussianBlur(image, (3, 3), 0)
+    # Calculate the Mean Squared Error (MSE) between the original and blurred image
     mse_value = calculate_mse(image, blurred)
     print(f"MSE between original and blurred image: {mse_value}")
     return mse_value > threshold
 
 
 def plot_histogram(image, title):
+    """
+    Parameters:
+    :param image: numpy.ndarray
+        The image for which the histogram is to be plotted.
+    :param title: str
+        The title of the histogram plot.
+    Returns: None
+    """
     plt.figure()
     plt.title(title)
     plt.xlabel("Bins")
@@ -64,14 +82,22 @@ def plot_histogram(image, title):
 
 # Equalize Images with CLAHE Method
 def clahe_equalization(img):
-
+    """
+    Parameter
+        :param img: Image to be equalize
+        :return: equalize image
+    """
+    # Adjust brightness and contrast of the image for better results
     image = adjust_brightness_contrast(img)
-    
+    # Create a CLAHE object with a clip limit and grid size
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    # Apply CLAHE to the image to enhance local contrast
     clahe_image = clahe.apply(image)
     
+    # Apply CLAHE to the image to enhance local contrast
     plot_histogram(image, "Original Image Histogram")
     plot_histogram(clahe_image, "CLAHE Equalized Image Histogram")
+    # Return the CLAHE equalized image
     return clahe_image
 
 
